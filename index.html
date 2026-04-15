@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Language Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Sign Language Learning Platform</h1>
+
+<a href="login.html">Login</a>
+<a href="lessons.html">Lessons</a>
+<a href="quiz.html">Quiz</a>
+<h2>Lessons</h2>
+
+<input type="text" id="search" placeholder="Search signs">
+<button onclick="searchLesson()">Search</button>
+
+<p id="result"></p>
+
+<h3>Basic Signs</h3>
+<p>👋 Hello</p>
+<p>👍 Yes</p>
+<p>✋ No</p>
+
+<video width="300" controls>
+    <source src="videos/hello.mp4" type="video/mp4">
+</video>
+
+<script src="script.js"></script>
+<h2>Quiz</h2>
+
+<p>What does 👍 mean?</p>
+
+<button onclick="checkAnswer('yes')">Yes</button>
+<button onclick="checkAnswer('no')">No</button>
+
+<p id="feedback"></p>
+
+<script src="script.js"></script>
+<h2>Login</h2>
+
+<input id="username" placeholder="Username">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<p id="msg"></p>
+
+<script src="script.js"></script>
+body {
+    font-family: Arial;
+    text-align: center;
+    background: #f2f2f2;
+}
+
+a {
+    display: block;
+    margin: 10px;
+}
+
+button {
+    padding: 10px;
+    margin: 5px;
+}
+function searchLesson() {
+    let input = document.getElementById("search").value.toLowerCase();
+
+    if (input === "hello") {
+        document.getElementById("result").innerHTML = "👋 Hello = wave hand";
+    } else {
+        document.getElementById("result").innerHTML = "Not found";
+    }
+}
+
+function checkAnswer(ans) {
+    if (ans === "yes") {
+        document.getElementById("feedback").innerHTML = "Correct ✅";
+    } else {
+        document.getElementById("feedback").innerHTML = "Wrong ❌";
+    }
+}
+
+function login() {
+    let user = document.getElementById("username").value;
+
+    if (user) {
+        localStorage.setItem("user", user);
+        document.getElementById("msg").innerHTML = "Login successful 🎉";
+    }
+}
+function detectSign(word) {
+    const signs = {
+        "hello": "👋 Wave hand",
+        "yes": "👍 Thumb up",
+        "no": "✋ Shake hand",
+        "thank you": "🤝 Hand to chin"
+    };
+
+    return signs[word.toLowerCase()] || "Not found";
+}
+import cv2
+import mediapipe as mp
+
+mp_hands = mp.solutions.hands
+hands = mp_hands.Hands(max_num_hands=1)
+mp_draw = mp.solutions.drawing_utils
+
+cap = cv2.VideoCapture(0)
+
+while True:
+    success, img = cap.read()
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    results = hands.process(img_rgb)
+
+    if results.multi_hand_landmarks:
+        for handLms in results.multi_hand_landmarks:
+            mp_draw.draw_landmarks(img, handLms, mp_hands.HAND_CONNECTIONS)
+            print("Hand detected")
+
+    cv2.imshow("AI Camera", img)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+# Sign Language Learning Platform
+
+This project helps people learn sign language online.
+
+## Features
+- Lessons
+- Quiz
+- Login system
+- AI camera (Python)
+- Search system
+
+## Technologies
+- HTML, CSS, JavaScript
+- Python (OpenCV, MediaPipe)
+
+## Purpose
+To improve communication between deaf and hearing communities.
+
+
+</body>
+</html>
